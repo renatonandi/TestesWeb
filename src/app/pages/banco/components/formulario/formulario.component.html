@@ -1,0 +1,58 @@
+<div class="w-29rem">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="field">
+      <label for="codigo">Código</label>
+      <p-inputNumber
+        #inputCodigo
+        id="codigo"
+        formControlName="codigo"
+        data-test="banco-form-codigo"
+        placeholder="Código"
+        [class.ng-invalid]="
+          codigo?.invalid && (codigo?.dirty || codigo?.touched)
+        "
+        class="ng-dirty w-full"
+        [useGrouping]="false"
+        [min]="1"
+        [max]="999"
+        [maxlength]="3"
+      ></p-inputNumber>
+    </div>
+    <div class="field">
+      <label for="nome">Nome</label>
+      <input
+        id="nome"
+        formControlName="nome"
+        data-test="banco-form-nome"
+        placeholder="Nome"
+        pInputText
+        type="text"
+        [class.ng-invalid]="nome?.invalid && (nome?.dirty || nome?.touched)"
+        class="ng-dirty w-full"
+        [maxLength]="256"
+      />
+    </div>
+    <div class="field">
+      <label for="tipo">Tipo</label>
+      <p-dropdown
+        id="tipo"
+        [options]="tipos"
+        formControlName="tipo"
+        data-test="banco-form-tipo"
+        optionLabel="name"
+        optionValue="code"
+        [class.ng-invalid]="tipo?.invalid && (tipo?.dirty || tipo?.touched)"
+        class="ng-dirty w-full"
+      ></p-dropdown>
+    </div>
+    <button
+      class="w-full"
+      [loading]="isLoading"
+      [disabled]="form.invalid"
+      pButton
+      type="submit"
+      data-test="banco-form-submit"
+      [label]="banco ? 'Editar' : 'Cadastrar'"
+    ></button>
+  </form>
+</div>

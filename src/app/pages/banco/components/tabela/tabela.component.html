@@ -1,0 +1,104 @@
+<p-confirmDialog
+  [breakpoints]="{ '540px': '95vw' }"
+  [style]="{ width: '500px' }"
+></p-confirmDialog>
+<div class="col-12">
+  <div class="flex justify-content-between align-items-center">
+    <div class="flex-initial flex align-items-center justify-content-center">
+      <button
+        pButton
+        (click)="openForm()"
+        type="button"
+        data-test="banco-open-form"
+        icon="pi pi-plus"
+        iconPos="left"
+        class="p-button-outlined p-button-success p-button-rounded mr-2"
+      ></button>
+    </div>
+    <div class="flex-initial flex align-items-center justify-content-center">
+      <span class="p-input-icon-left mr-2">
+        <i class="pi pi-search"></i>
+        <input
+          #boxPesquisa
+          pInputText
+          type="text"
+          data-test="banco-pesquisar"
+          (input)="pesquisar(boxPesquisa.value)"
+          placeholder="Pesquisar"
+        />
+      </span>
+    </div>
+  </div>
+</div>
+<div class="col-12">
+  <p-table
+    #tabela
+    [columns]="columns"
+    [value]="bancos"
+    styleClass="p-datatable"
+    responsiveLayout="scroll"
+    [loading]="isLoading"
+    [globalFilterFields]="['codigo', 'nome']"
+    [rowHover]="true"
+    [reorderableColumns]="true"
+    [resizableColumns]="true"
+  >
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th
+          *ngFor="let col of columns"
+          [pSortableColumn]="col.field"
+          pResizableColumn
+          pReorderableColumn
+          [class]="
+            col.class ? col.class : col.type === 'actions' ? 'text-center' : ''
+          "
+        >
+          {{ col.header }}
+          <p-sortIcon *ngIf="col.header" [field]="col.field"></p-sortIcon>
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-columns="columns">
+      <tr>
+        <ng-container *ngFor="let col of columns">
+          <td *ngIf="col.converter" [class]="col.class">
+            {{ col.converter(rowData) }}
+          </td>
+          <td *ngIf="col.type === 'string'" [class]="col.class">
+            {{ getRowValue(rowData, col.field) }}
+          </td>
+          <td *ngIf="col.type === 'number'" [class]="col.class">
+            {{ getRowValue(rowData, col.field) | number: "3.0" }}
+          </td>
+          <td *ngIf="col.type === 'currency'" [class]="col.class">
+            {{ getRowValue(rowData, col.field) | currency: "BRL" }}
+          </td>
+          <td *ngIf="col.type === 'date'" [class]="col.class">
+            {{ getRowValue(rowData, col.field) | date: "dd/MM/yyyy" }}
+          </td>
+          <td class="text-center" *ngIf="col.type === 'actions'">
+            <i
+              class="mr-2 pi pi-pencil text-orange-400 cursor-pointer"
+              pTooltip="Editar"
+              (click)="openForm(rowData)"
+            ></i>
+            <i
+              class="ml-2 pi pi-trash text-pink-500 cursor-pointer"
+              pTooltip="Excluir"
+              (click)="excluir(rowData)"
+            ></i>
+          </td>
+          <td *ngIf="col.icons" [class]="col.class">
+            <i
+              *ngFor="let icon of col.icons(rowData)"
+              [class]="icon.class"
+              [pTooltip]="icon.tooltip"
+              (click)="icon.click && icon.click(rowData)"
+            ></i>
+          </td>
+        </ng-container>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
